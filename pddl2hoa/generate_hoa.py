@@ -4,6 +4,9 @@ from collections import defaultdict
 import re
 from collections import deque
 from .game import PDDLGame
+import os
+import contextlib
+import time
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,10 +40,8 @@ def _generate_game_graph_edges(game):
 
     queue = deque()
     game_graph = defaultdict(set)
-    visited = set()
     queue.append(game)
-    visited.add(game)  # just the state string
-
+    start_time = time.time()
     while queue:
         game = queue.popleft()
         successors = game.get_successors()
@@ -51,6 +52,7 @@ def _generate_game_graph_edges(game):
             if succ not in game_graph:
                 game_graph[succ] = set()
                 queue.append(succ)
+                print(f'exploring graph at {len(game_graph)/(time.time()-start_time):.1f} states/s \r', end='')
                 
 
     return game_graph
@@ -196,7 +198,7 @@ def _parse_strategy_string(strategy_string):
     return strategy
 
 
-def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=True, edge_labeled=True, strategy_template=True):
+def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=True, edge_labeled=True, strategy_template=True, verbose=False):
     # Check if problem_path is a folder or not
     if os.path.isdir(problem_path):
         problem_folder=problem_path
@@ -208,7 +210,14 @@ def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=True, edge_labe
 
     game = PDDLGame(domain_path, problem_folder, problem_idx)
     ret=[]
-    state_labeled_hoa, edge_labeled_hoa = _format_hoa(game)
+    # INSERT_YOUR_CODE
+
+
+    if not verbose:
+        with open(os.devnull, 'w') as devnull, contextlib.redirect_stdout(devnull):
+            state_labeled_hoa, edge_labeled_hoa = _format_hoa(game)
+    else:
+        state_labeled_hoa, edge_labeled_hoa = _format_hoa(game)
     if state_labeled:
         ret.append(state_labeled_hoa)
     if edge_labeled:

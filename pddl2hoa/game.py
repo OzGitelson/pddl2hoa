@@ -77,19 +77,28 @@ class TurnBasedGame(ABC):
 
 
 class PDDLGame(TurnBasedGame):
-    def __init__(self, domain_path, problem_path, problem_idx=-1):
-        self.domain_file = domain_path
-        self.problem_folder = problem_path
-        self.env = PDDLEnv(domain_path, problem_path, operators_as_actions=True, dynamic_action_space=True)
-
-        if problem_idx >=0:
-            self.env.fix_problem_index(problem_idx)
-        
-        self.env.reset()
-        self.all_propositions=self.env.observation_space.all_ground_literals(self.env.get_state())
+    env=None
+    domain_file=None
+    problem_folder=None
+    all_propositions=None
     
+    def __init__(self, domain_path, problem_path, problem_idx=-1, reset_env=False, state=None):
+        if self.__class__.env is None or reset_env:
+            self.__class__.env = PDDLEnv(domain_path, problem_path, operators_as_actions=True, dynamic_action_space=True)
+            if problem_idx >=0:
+                self.__class__.env.fix_problem_index(problem_idx)
+            self.__class__.domain_file = domain_path
+            self.__class__.problem_folder = problem_path
+            self.__class__.env.reset()
+            self.__class__.all_propositions = self.__class__.env.observation_space.all_ground_literals(self.__class__.env.get_state())
+            
+        if state is None:
+            state, _ = self.__class__.env.reset()
+        self.state = state
+        
     def _make_move_impl(self, *args, **kwargs):
-        self.env.step(*args, **kwargs)
+        self.__class__.env._state = self.state
+        self.state, _, _, _, _ = self.__class__.env.step(*args, **kwargs)
 
     @property
     def name(self):
@@ -101,11 +110,11 @@ class PDDLGame(TurnBasedGame):
     
     @property
     def is_winning_state(self):
-        return self.env._is_goal_reached(self.env.get_state())
+        return self.__class__.env._is_goal_reached(self.state)
     
     @property
     def physical_state(self):
-        state_obj = self.env.get_state()
+        state_obj = self.state
         literals = [str(lit) for lit in state_obj.literals]
         literals.sort()
 
@@ -119,8 +128,8 @@ class PDDLGame(TurnBasedGame):
     
     
     def get_valid_actions(self):
-        return self.env.action_space.all_ground_literals(self.env.get_state())
+        return self.__class__.env.action_space.all_ground_literals(self.state)
     
     def get_propositions(self):
-        propositions = {str(prop):prop in self.env.get_state().literals for prop in self.all_propositions}
+        propositions = {str(prop):prop in self.state.literals for prop in self.__class__.all_propositions}
         return propositions
