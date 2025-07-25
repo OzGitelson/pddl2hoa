@@ -52,7 +52,7 @@ def _generate_game_graph_edges(game):
             if succ not in game_graph:
                 game_graph[succ] = set()
                 queue.append(succ)
-                print(f'exploring graph at {len(game_graph)/(time.time()-start_time):.1f} states/s \r', end='')
+                print(f'{len(game_graph)} states explored at {len(game_graph)/(time.time()-start_time):.1f} states/s \r', end='')
                 
 
     return game_graph
