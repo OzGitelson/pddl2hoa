@@ -42,19 +42,20 @@ def _generate_game_graph_edges(game):
     game_graph = defaultdict(set)
     queue.append(game)
     start_time = time.time()
+    accesses = 0
     while queue:
         game = queue.popleft()
         successors = game.get_successors()
         if not successors:
             game_graph[game].add(game)
         for succ in successors:
+            accesses += 1
             game_graph[game].add(succ)
             if succ not in game_graph:
                 game_graph[succ] = set()
                 queue.append(succ)
-                print(f'{len(game_graph)} states explored at {len(game_graph)/(time.time()-start_time):.1f} states/s \r', end='')
-                
-
+                print(f'{len(game_graph)} states explored at {len(game_graph)/(time.time()-start_time):.1f} states/s and {accesses/(time.time()-start_time):.1f} accesses/s\r', end='', flush=True)
+    print()
     return game_graph
 
 def _get_state_objects(game):

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from copy import deepcopy
+from copy import copy
 import os
 from pddlgym.core import PDDLEnv
 
@@ -62,7 +62,7 @@ class TurnBasedGame(ABC):
     def get_successors(self):
         successors = []
         for action in self.get_valid_actions():
-            successor = deepcopy(self)
+            successor = copy(self)
             successor.make_move(action)
             successors.append(successor)
         return successors
