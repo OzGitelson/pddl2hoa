@@ -91,7 +91,7 @@ def _get_state_objects(game):
 
     return states, atomic_propositions
 
-def _format_hoa(game):
+def format_hoa(game):
     states, atomic_propositions = _get_state_objects(game)
 
     header=_generate_hoa_header(states, atomic_propositions)
@@ -199,7 +199,7 @@ def _parse_strategy_string(strategy_string):
     return strategy
 
 
-def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=True, edge_labeled=True, strategy_template=True, verbose=False):
+def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=False, edge_labeled=True, strategy_template=False, verbose=False):
     # Check if problem_path is a folder or not
     if os.path.isdir(problem_path):
         problem_folder=problem_path
@@ -216,9 +216,9 @@ def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=True, edge_labe
 
     if not verbose:
         with open(os.devnull, 'w') as devnull, contextlib.redirect_stdout(devnull):
-            state_labeled_hoa, edge_labeled_hoa = _format_hoa(game)
+            state_labeled_hoa, edge_labeled_hoa = format_hoa(game)
     else:
-        state_labeled_hoa, edge_labeled_hoa = _format_hoa(game)
+        state_labeled_hoa, edge_labeled_hoa = format_hoa(game)
     if state_labeled:
         ret.append(state_labeled_hoa)
     if edge_labeled:
