@@ -24,7 +24,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install build tools
-        run: uv pip install build twine
+        run: pip install build twine
 
       - name: Build package
         run: python -m build
