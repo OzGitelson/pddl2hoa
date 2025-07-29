@@ -37,7 +37,7 @@ After installation, use the CLI tool:
 pddl2hoa domain.pddl problem.pddl > edge_labeled_HOA.hoa
 ```
 
-Or use it as a Python library
+Or use it as a Python library:
 ```python
 from pddl2hoa import convert_pddl_to_hoa
 
