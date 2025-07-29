@@ -49,3 +49,17 @@ convert_pddl_to_hoa("domain.pddl", "problem.pddl")
 
 ## Converting from other formats to HOA
 This library is designed to be extensible. You can convert almost any domain with a graph-based structure into an HOA representation by subclassing the `TurnBasedGame` abstract base class in [game.py](./pddl2hoa/game.py). Once your game format is implemented, you can call the `format_hoa` method from [generate_hoa.py](./pddl2hoa/generate_hoa.py) to produce a corresponding HOA graph.
+
+---
+
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to change.
+
+---
+
+## Links
+
+- [Github](https://github.com/OzGitelson/pddl2hoa)
+- [PyPi](https://pypi.org/project/pddl2hoa/)
+- [PDDLGym](https://github.com/tomsilver/pddlgym), the PDDL utility that this package uses under the hood
+- [HOA Format Spec](https://adl.github.io/hoaf/)
