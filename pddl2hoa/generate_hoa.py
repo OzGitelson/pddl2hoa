@@ -198,6 +198,11 @@ def _parse_strategy_string(strategy_string):
     
     return strategy
 
+def generate_strategy_template(edge_labeled_hoa):
+    strategy_string = _get_strategy_string_from_cosmo(edge_labeled_hoa)
+    strategy = _parse_strategy_string(strategy_string)
+    return strategy
+
 
 def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=False, edge_labeled=True, strategy_template=False, verbose=False):
     # Check if problem_path is a folder or not
@@ -224,9 +229,7 @@ def convert_pddl_to_hoa(domain_path, problem_path, state_labeled=False, edge_lab
     if edge_labeled:
         ret.append(edge_labeled_hoa)
     if strategy_template:
-        strategy_string = _get_strategy_string_from_cosmo(edge_labeled_hoa)
-        strategy = _parse_strategy_string(strategy_string)
-        ret.append(strategy)
+        ret.append(generate_strategy_template(edge_labeled_hoa))
     return tuple(ret)
 
 
