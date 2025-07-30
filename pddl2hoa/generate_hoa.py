@@ -137,22 +137,21 @@ def _generate_hoa_header(states, atomic_propositions):
 
 
 
-def _get_strategy_string_from_pestel(edge_labeled_hoa_path):
+def _get_strategy_string_from_pestel(edge_labeled_hoa):
     """
     Runs the 'pestel' tool with the given edge-labeled HOA file as input,
     and returns the resulting strategy string (stdout as a string).
     """
     try:
         # Run pestel, passing the file as stdin
-        with open(edge_labeled_hoa_path, 'r') as hoa_file:
-            result = subprocess.run(
-                ['pestel'],
-                stdin=hoa_file,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                check=True
-            )
+        result = subprocess.run(
+            ['pestel'],
+            input=edge_labeled_hoa,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
         return result.stdout
     except FileNotFoundError:
         raise RuntimeError("The 'pestel' executable was not found in your PATH.")
