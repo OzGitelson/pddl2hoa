@@ -137,27 +137,27 @@ def _generate_hoa_header(states, atomic_propositions):
 
 
 
-def _get_strategy_string_from_cosmo(edge_labeled_hoa):
+def _get_strategy_string_from_pestel(edge_labeled_hoa_path):
     """
-    Runs the 'cosmo' tool with the given edge-labeled HOA file as input,
+    Runs the 'pestel' tool with the given edge-labeled HOA file as input,
     and returns the resulting strategy string (stdout as a string).
     """
     try:
-        # Run cosmo, passing the file as stdin
-        result = subprocess.run(
-            ['cosmo'],
-            # stdin=edge_labeled_hoa,
-            input=edge_labeled_hoa,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            check=True
-        )
+        # Run pestel, passing the file as stdin
+        with open(edge_labeled_hoa_path, 'r') as hoa_file:
+            result = subprocess.run(
+                ['pestel'],
+                stdin=hoa_file,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=True
+            )
         return result.stdout
     except FileNotFoundError:
-        raise RuntimeError("The 'cosmo' executable was not found in your PATH.")
+        raise RuntimeError("The 'pestel' executable was not found in your PATH.")
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"cosmo failed: {e.stdout}")
+        raise RuntimeError(f"pestel failed: {e.stdout}")
 
 def _parse_strategy_string(strategy_string):
     """
@@ -169,7 +169,7 @@ def _parse_strategy_string(strategy_string):
     if idx != -1:
         strategy_string = strategy_string[idx + len(strat_marker):]
     
-    live_marker = 'Conditional live groups: '
+    live_marker = 'Live groups: '
     live_idx = strategy_string.find(live_marker)
 
     unsafe_marker = 'Unsafe edges:'
@@ -197,9 +197,8 @@ def _parse_strategy_string(strategy_string):
 
     
     return strategy
-
 def generate_strategy_template(edge_labeled_hoa):
-    strategy_string = _get_strategy_string_from_cosmo(edge_labeled_hoa)
+    strategy_string = _get_strategy_string_from_pestel(edge_labeled_hoa)
     strategy = _parse_strategy_string(strategy_string)
     return strategy
 
